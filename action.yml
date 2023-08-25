@@ -1,6 +1,6 @@
 name: "PR Review Apps on fly.io [Fork - added dockerfile]"
 description: "Deploy temporary apps from pull requests on Fly.io"
-author: Fly
+author: gnakic
 branding:
   icon: "upload-cloud"
   color: "purple"
