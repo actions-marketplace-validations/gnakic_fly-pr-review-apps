@@ -35,3 +35,5 @@ inputs:
     description: VM size. Default `-shared-cpu-1x`
   vm_memory:
     description: VM memory. Default `256`
+  ha:
+    description: Create spare machines that increases app availability. Default `false`
