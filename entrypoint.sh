@@ -27,6 +27,7 @@ dockerfile="$INPUT_DOCKERFILE"
 build_arg="$INPUT_BUILD_ARG"
 vm_size="${INPUT_VM_SIZE:-${FLY_VM_SIZE:-shared-cpu-1x}}"
 vm_memory="${INPUT_VM_MEMORY:-${FLY_VM_MEMORY:-256}}"
+ha="${INPUT_HA:-${FLY_HA:-false}}"
 
 
 if ! echo "$app" | grep "$PR_NUMBER"; then
@@ -49,11 +50,11 @@ fi
 if ! flyctl status --app "$app"; then
   # Do not copy config if it was passed
   if [ -n "$INPUT_CONFIG" ]; then
-    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha "$ha"
     # Cleanup generated fly.toml
     rm fly.toml
   else
-    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha "$ha"
     # Cleanup generated fly.toml
     rm fly.toml
   fi
