@@ -50,11 +50,11 @@ fi
 if ! flyctl status --app "$app"; then
   # Do not copy config if it was passed
   if [ -n "$INPUT_CONFIG" ]; then
-    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha "$ha"
+    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha=$ha
     # Cleanup generated fly.toml
     rm fly.toml
   else
-    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha "$ha"
+    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha=$ha
     # Cleanup generated fly.toml
     rm fly.toml
   fi
