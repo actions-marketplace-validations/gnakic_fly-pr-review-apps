@@ -35,5 +35,7 @@ inputs:
     description: VM size. Default `-shared-cpu-1x`
   vm_memory:
     description: VM memory. Default `256`
+  wait_timeout:
+    description: Seconds to wait for individual machines to transition states and become healthy. Default `120`
   ha:
     description: Create spare machines that increases app availability. Default `false`
