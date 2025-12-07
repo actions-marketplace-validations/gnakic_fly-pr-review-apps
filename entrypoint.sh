@@ -27,6 +27,8 @@ dockerfile="$INPUT_DOCKERFILE"
 build_arg="$INPUT_BUILD_ARG"
 vm_size="${INPUT_VM_SIZE:-${FLY_VM_SIZE:-shared-cpu-1x}}"
 vm_memory="${INPUT_VM_MEMORY:-${FLY_VM_MEMORY:-256}}"
+wait_timeout="${INPUT_WAIT_TIMEOUT:-120}"
+ha="${INPUT_HA:-${FLY_HA:-false}}"
 
 
 if ! echo "$app" | grep "$PR_NUMBER"; then
@@ -49,17 +51,17 @@ fi
 if ! flyctl status --app "$app"; then
   # Do not copy config if it was passed
   if [ -n "$INPUT_CONFIG" ]; then
-    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha=$ha
     # Cleanup generated fly.toml
     rm fly.toml
   else
-    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory"
+    flyctl launch --no-deploy --copy-config --dockerignore-from-gitignore --name "$app" --image "$image" --region "$region" --org "$org" --vm-size "$vm_size" --vm-memory "$vm_memory" --ha=$ha
     # Cleanup generated fly.toml
     rm fly.toml
   fi
 
   if [ -n "$INPUT_SECRETS" ]; then
-    echo $INPUT_SECRETS | tr " " "\n" | flyctl secrets import --app "$app"
+    echo $INPUT_SECRETS | sed 's/ \([A-Z]\)/\n\1/g' | flyctl secrets import --app "$app"
   fi
 
   # Attach postgres cluster to the app if specified.
@@ -67,9 +69,9 @@ if ! flyctl status --app "$app"; then
     flyctl postgres attach --app "$app" "$INPUT_POSTGRES" || true
   fi
 
-  flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate 
+  flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --ha=$ha --wait-timeout "$wait_timeout"
 elif [ "$INPUT_UPDATE" != "false" ]; then
-  flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate 
+  flyctl deploy --config "$config" --dockerfile "$dockerfile" $build_arg --app "$app" --region "$region" --image "$image" --vm-size "$vm_size" --vm-memory "$vm_memory" --strategy immediate --ha=$ha --wait-timeout "$wait_timeout"
 fi
 
 # Make some info available to the GitHub workflow.

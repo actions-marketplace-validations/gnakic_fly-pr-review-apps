@@ -18,9 +18,11 @@ If you have an existing `fly.toml` in your repo, this action will copy it with a
 | `org`        | Which Fly organization to launch the app under. Alternatively, set the env `FLY_ORG`. Defaults to `personal`.                                                                                            |
 | `path`       | Path to run the `flyctl` commands from. Useful if you have an existing `fly.toml` in a subdirectory.                                                                                                     |
 | `postgres`   | Optional name of an existing Postgres cluster to `flyctl postgres attach` to.                                                                                                                            |
-| `update`     | Whether or not to update this Fly app when the PR is updated. Default `true`.
-| `vm_size`    | VM size. Default `-shared-cpu-1x`.
-| `vm_memory`  | VM memory. Default `256`.                                                                                                                
+| `update`     | Whether or not to update this Fly app when the PR is updated. Default `true`.                                                                                                                            |
+| `vm_size`    | VM size. Default `-shared-cpu-1x`.                                                                                                                                                                       |
+| `vm_memory`  | VM memory. Default `256`.                                                                                                                                                                                |                                                                                                           
+| `wait_timeout`| Seconds to wait for individual machines to transition states and become healthy. Default `120`                                                                                                           |
+| `ha`          | Create spare machines that increases app availability. Default `false`.                                                                                                                                  |
 
 ## Required Secrets
 
